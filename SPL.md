@@ -93,5 +93,71 @@ Always start with a broad search, then filter down.
 
 Use index and sourcetype early in the query for better speed.
 
-Try to transform and reduce data as early as possible (to minimize resource usage).
+
+# 📘 Sample SPL Queries
+## 🔍 Basic Search Queries
+    index=main error
+→ Finds all events with the keyword "error" in the main index.
+    
+    index=web_logs status=404
+→ Shows events where HTTP status is 404 (Not Found).
+
+## 📊 Aggregation & Statistics
+    index=web_logs | stats count by status
+→ Counts number of events grouped by HTTP status code.
+
+
+    index=syslog | stats avg(cpu_usage) by host
+→ Shows average CPU usage per host.
+
+## 📈 Time-based Analysis
+    index=app_logs | timechart span=1h count
+→ Number of events per hour.
+
+    index=web_logs | timechart avg(response_time) by host
+→ Average response time by host over time.
+
+## 🧠 Top & Rare Values
+
+    index=web_logs | top limit=5 url
+→ Top 5 most accessed URLs.
+
+    index=web_logs | rare user_agent
+→ Rarely used user agents.
+
+## 🛠️ Using Eval for Calculations
+
+    index=sales | eval total_price=quantity*price | stats sum(total_price) by region
+→ Calculates total sales amount by region.
+
+    index=logins | eval login_time=strptime(_time, "%Y-%m-%d %H:%M:%S") | table user login_time
+→ Converts time format and displays login times.
+
+## 🧹 Field Extraction & Filtering
+    index=access_logs | rex "user=(?<username>\w+)" | table _time, username
+→ Extracts username using regex.
+
+    index=transactions | where amount > 1000
+→ Filters events where amount is greater than 1000.
+
+## 🧾 Working with Tables
+    index=web_logs | table _time, host, status, url
+→ Displays selected fields in a table format.
+
+    index=error_logs | fields - _raw, source
+→ Removes unnecessary fields from results.
+
+## 🔁 Joins and Subsearches
+    index=orders order_status="failed" [ search index=users region="US" | fields user_id ]
+→ Finds failed orders by users in the US.
+
+## 🔄 Deduplication and Sorting
+    index=logins | dedup user_id | sort -_time
+→ Shows only the latest login event per user.
+
+##  🧮 Running Totals
+    index=transactions | streamstats sum(amount) as running_total by account_id
+→ Running total of transaction amounts per account.
+
+
 
