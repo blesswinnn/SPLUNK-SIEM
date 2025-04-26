@@ -1,0 +1,5 @@
+### 1. Prepare Sample DNS Log Files
+- Obtain sample [DNS log file](https://www.secrepo.com/maccdc2012/dns.log.gz) in a suitable format (e.g., text files).
+- Ensure the log files contain relevant DNS events, including source IP, destination IP, domain name, query type, response code, etc.
+- Save the sample log files in a directory accessible by the Splunk instance.
+
